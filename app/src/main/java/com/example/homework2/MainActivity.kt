@@ -41,11 +41,15 @@ import androidx.compose.runtime.setValue
 //import androidx.compose.runtime.setValue
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
+import androidx.navigation.compose.rememberNavController
+
 //import com.example.homework2.ui.theme.Homework2Theme
 
 // most of the code is copied from the tutorial
-// https://developer.android.com/jetpack/compose/tutorial
+// https://developer.android.com/jetpack/compose/tutorial (homework1)
 // with some changes to variable names
+// https://developer.android.com/guide/navigation#kts
+//https://developer.android.com/guide/navigation/navcontroller
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
