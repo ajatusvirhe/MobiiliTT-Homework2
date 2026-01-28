@@ -41,6 +41,7 @@ import androidx.compose.runtime.setValue
 //import androidx.compose.runtime.setValue
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.lazy.items
 import androidx.navigation.compose.rememberNavController
 
 //import com.example.homework2.ui.theme.Homework2Theme
@@ -58,7 +59,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             Homework2Theme {
                 Surface {
-                    Conversation(SampleData.conversationSample)
+                    Conversation(SampleData.conversationSample.get(1))
                     //MessageCard(Message("Android", "Jetpack Compose"))
                 }
             }
@@ -67,12 +68,22 @@ class MainActivity : ComponentActivity() {
 }
 
 data class Message(val author: String, val body: String)
+data class Chat(val sender: String, val body: List<Message>)
 
 @Composable
-fun Conversation(messagelist: List<Message>) {
+fun Conversation(messagelist: Chat){//List<Message>) {
     LazyColumn {
-        items(messagelist) { message ->
+        items(messagelist.body) { message ->
             MessageCard(message)
+        }
+    }
+}
+
+@Composable
+fun mainscrn(chats : List<Chat>){
+    LazyColumn {
+        items(chats) { chat ->
+            MessageCard(chat.body.get(chat.body.size -1))
         }
     }
 }
@@ -81,7 +92,15 @@ fun Conversation(messagelist: List<Message>) {
 @Composable
 fun PreviewConversation() {
     Homework2Theme {
-        Conversation(SampleData.conversationSample)
+        Conversation(SampleData.conversationSample.get(1))
+    }
+}
+
+@Preview
+@Composable
+fun PreviewMainscreen(){
+    Homework2Theme {
+        mainscrn(SampleData.conversationSample)
     }
 }
 
@@ -122,6 +141,48 @@ fun MessageCard(msg:Message) {
                 Text(text = msg.body,
                     modifier = Modifier.padding(all = 4.dp),
                     maxLines = if (isExpanded) Int.MAX_VALUE else 1,
+                    style = MaterialTheme.typography.bodyMedium)
+            }
+        }
+    }
+}
+
+@Composable
+fun ChatCard(msg: Message){
+    Row(modifier = Modifier.padding(all = 8.dp)) {
+        Image(
+            painter = if(msg.author == "Kethu") painterResource(R.drawable.kethucrop)
+            else painterResource(R.drawable.napakettu_crop),
+            contentDescription = "Contact profile picture",
+            modifier = Modifier
+                .size(40.dp) // Set image size to 40 dp
+                .clip(CircleShape) // Clip image to be shaped as a circle
+                .border(1.5.dp, MaterialTheme.colorScheme.primary, CircleShape)
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+
+        val surfaceColor by animateColorAsState(
+            MaterialTheme.colorScheme.surface,
+        )
+
+        Column {
+            Text( // author
+                text = msg.author,
+                color = MaterialTheme.colorScheme.secondary,
+                style = MaterialTheme.typography.titleSmall
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            //message body
+            Surface(
+                shape = MaterialTheme.shapes.small,
+                shadowElevation = 1.dp,
+                // surfaceColor color will be changing gradually from primary to surface
+                color = surfaceColor,
+                // animateContentSize will change the Surface size gradually
+                modifier = Modifier.animateContentSize().padding(4.dp)) {
+                Text(text = msg.body,
+                    modifier = Modifier.padding(all = 4.dp),
+                    maxLines = 1,
                     style = MaterialTheme.typography.bodyMedium)
             }
         }
