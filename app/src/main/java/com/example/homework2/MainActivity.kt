@@ -49,9 +49,9 @@ import androidx.compose.material3.TextButton
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 
-// most of the code is copied from the tutorial
+// some of the code is copied from my homework1
 // https://developer.android.com/jetpack/compose/tutorial (homework1)
-// with some changes to variable names
+//some is copied from tutorials (listed in Navigaton.kt)
 // https://developer.android.com/guide/navigation#kts
 //https://developer.android.com/guide/navigation/navcontroller
 
@@ -62,9 +62,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             Homework2Theme {
                 Surface {
-                    //Conversation(SampleData.conversationSample.get(1))
                     Navigation()
-                    //Mainscrn(SampleData.conversationSample, navController = nav)
                 }
             }
         }
@@ -80,18 +78,11 @@ data class Chat(val sender: String, val body: List<Message>){
 
 @Composable
 fun Conversation(messagelist: Chat){//List<Message>) {
-    /*Column() {
-        Button(onClick = {}, modifier = Modifier.offset(10.dp)) {
-            Text(
-                "Back"
-            )
-        }*/
     LazyColumn {
         items(messagelist.body) { message ->
             MessageCard(message)
         }
     }
-        //}
 }
 
 @Composable
