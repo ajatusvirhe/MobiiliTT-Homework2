@@ -60,7 +60,6 @@ class MainActivity : ComponentActivity() {
             Homework2Theme {
                 Surface {
                     Conversation(SampleData.conversationSample.get(1))
-                    //MessageCard(Message("Android", "Jetpack Compose"))
                 }
             }
         }
@@ -80,10 +79,10 @@ fun Conversation(messagelist: Chat){//List<Message>) {
 }
 
 @Composable
-fun mainscrn(chats : List<Chat>){
+fun Mainscrn(chats : List<Chat>){
     LazyColumn {
         items(chats) { chat ->
-            MessageCard(chat.body.get(chat.body.size -1))
+            ChatCard(chat.body.get(chat.body.size -1)) // latest message sent in this chat
         }
     }
 }
@@ -100,7 +99,7 @@ fun PreviewConversation() {
 @Composable
 fun PreviewMainscreen(){
     Homework2Theme {
-        mainscrn(SampleData.conversationSample)
+        Mainscrn(SampleData.conversationSample)
     }
 }
 
@@ -148,42 +147,37 @@ fun MessageCard(msg:Message) {
 }
 
 @Composable
-fun ChatCard(msg: Message){
-    Row(modifier = Modifier.padding(all = 8.dp)) {
-        Image(
-            painter = if(msg.author == "Kethu") painterResource(R.drawable.kethucrop)
-            else painterResource(R.drawable.napakettu_crop),
-            contentDescription = "Contact profile picture",
-            modifier = Modifier
-                .size(40.dp) // Set image size to 40 dp
-                .clip(CircleShape) // Clip image to be shaped as a circle
-                .border(1.5.dp, MaterialTheme.colorScheme.primary, CircleShape)
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-
-        val surfaceColor by animateColorAsState(
-            MaterialTheme.colorScheme.surface,
-        )
-
-        Column {
-            Text( // author
-                text = msg.author,
-                color = MaterialTheme.colorScheme.secondary,
-                style = MaterialTheme.typography.titleSmall
+fun ChatCard(msg: Message) {
+    val surfaceColor by animateColorAsState(
+        MaterialTheme.colorScheme.surface,
+    )
+    Surface(color = surfaceColor) {
+        Row(
+            modifier = Modifier.fillMaxSize().padding(all=4.dp),
+        ){
+            Image(
+                painter = if (msg.author == "Kethu") painterResource(R.drawable.kethucrop)
+                else painterResource(R.drawable.napakettu_crop),
+                contentDescription = "Contact profile picture",
+                modifier = Modifier
+                    .size(40.dp) // Set image size to 40 dp
+                    .clip(CircleShape) // Clip image to be shaped as a circle
+                    .border(1.5.dp, MaterialTheme.colorScheme.primary, CircleShape)
             )
-            Spacer(modifier = Modifier.height(4.dp))
-            //message body
-            Surface(
-                shape = MaterialTheme.shapes.small,
-                shadowElevation = 1.dp,
-                // surfaceColor color will be changing gradually from primary to surface
-                color = surfaceColor,
-                // animateContentSize will change the Surface size gradually
-                modifier = Modifier.animateContentSize().padding(4.dp)) {
-                Text(text = msg.body,
-                    modifier = Modifier.padding(all = 4.dp),
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Column(modifier = Modifier.fillMaxSize()) {
+                Text( // author
+                    text = msg.author,
+                    color = MaterialTheme.colorScheme.secondary,
+                    style = MaterialTheme.typography.titleSmall
+                )
+                Text(
+                    text = msg.body,
+                    modifier = Modifier.padding(all = 1.dp),
                     maxLines = 1,
-                    style = MaterialTheme.typography.bodyMedium)
+                    style = MaterialTheme.typography.bodyMedium
+                )
             }
         }
     }
