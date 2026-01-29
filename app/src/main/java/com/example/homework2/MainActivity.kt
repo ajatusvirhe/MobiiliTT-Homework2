@@ -1,5 +1,6 @@
 package com.example.homework2
 
+import android.R.attr.onClick
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -41,10 +42,12 @@ import androidx.compose.runtime.setValue
 //import androidx.compose.runtime.setValue
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
+import androidx.compose.material3.TextButton
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-
-//import com.example.homework2.ui.theme.Homework2Theme
 
 // most of the code is copied from the tutorial
 // https://developer.android.com/jetpack/compose/tutorial (homework1)
@@ -59,7 +62,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             Homework2Theme {
                 Surface {
-                    Conversation(SampleData.conversationSample.get(1))
+                    //Conversation(SampleData.conversationSample.get(1))
+                    Navigation()
+                    //Mainscrn(SampleData.conversationSample, navController = nav)
                 }
             }
         }
@@ -67,23 +72,48 @@ class MainActivity : ComponentActivity() {
 }
 
 data class Message(val author: String, val body: String)
-data class Chat(val sender: String, val body: List<Message>)
+data class Chat(val sender: String, val body: List<Message>){
+    fun getChats(sender: String):List<Message> {
+        return this.body
+    }
+}
 
 @Composable
 fun Conversation(messagelist: Chat){//List<Message>) {
+    /*Column() {
+        Button(onClick = {}, modifier = Modifier.offset(10.dp)) {
+            Text(
+                "Back"
+            )
+        }*/
     LazyColumn {
         items(messagelist.body) { message ->
             MessageCard(message)
         }
     }
+        //}
 }
 
 @Composable
-fun Mainscrn(chats : List<Chat>){
+fun Mainscrn(chats : List<Chat>, navController: NavController){
     LazyColumn {
         items(chats) { chat ->
-            ChatCard(chat.body.get(chat.body.size -1)) // latest message sent in this chat
+            ChatCard(chat.body.last(), navController) // latest message sent in this chat
         }
+    }
+}
+@Composable
+fun ChatScreen(chat: Chat, navController: NavController){
+    Column() {
+        Button(onClick = {navController.navigate(Screen.MainScreen.route){
+            popUpTo(Screen.MainScreen.route){inclusive=true}
+        } },
+            modifier = Modifier.offset(10.dp)) {
+            Text(
+                "Back"
+            )
+        }
+        Conversation(chat)
     }
 }
 
@@ -95,13 +125,18 @@ fun PreviewConversation() {
     }
 }
 
-@Preview
+/*@Preview
 @Composable
 fun PreviewMainscreen(){
     Homework2Theme {
-        Mainscrn(SampleData.conversationSample)
+        //Spacer(modifier = Modifier.height(10.dp))
+        LazyColumn(modifier = Modifier.offset(0.dp,15.dp)) {
+            items(SampleData.conversationSample) { chat ->
+                ChatCard(chat.body.last()) // latest message sent in this chat
+            }
+        }
     }
-}
+}*/
 
 @Composable
 fun MessageCard(msg:Message) {
@@ -147,7 +182,7 @@ fun MessageCard(msg:Message) {
 }
 
 @Composable
-fun ChatCard(msg: Message) {
+fun ChatCard(msg: Message, navController : NavController) {
     val surfaceColor by animateColorAsState(
         MaterialTheme.colorScheme.surface,
     )
@@ -165,19 +200,23 @@ fun ChatCard(msg: Message) {
                     .border(1.5.dp, MaterialTheme.colorScheme.primary, CircleShape)
             )
             Spacer(modifier = Modifier.width(8.dp))
-
-            Column(modifier = Modifier.fillMaxSize()) {
-                Text( // author
-                    text = msg.author,
-                    color = MaterialTheme.colorScheme.secondary,
-                    style = MaterialTheme.typography.titleSmall
-                )
-                Text(
-                    text = msg.body,
-                    modifier = Modifier.padding(all = 1.dp),
-                    maxLines = 1,
-                    style = MaterialTheme.typography.bodyMedium
-                )
+            TextButton(onClick ={
+                if (msg.author == "Kethu") navController.navigate(Screen.KethuScreen.route)
+                else (navController.navigate(Screen.NapakettuScreen.route))
+            }) {
+                Column(modifier = Modifier.fillMaxSize()){
+                    Text( // author
+                        text = msg.author,
+                        color = MaterialTheme.colorScheme.secondary,
+                        style = MaterialTheme.typography.titleSmall
+                    )
+                    Text(
+                        text = msg.body,
+                        modifier = Modifier.padding(all = 1.dp),
+                        maxLines = 1,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
             }
         }
     }

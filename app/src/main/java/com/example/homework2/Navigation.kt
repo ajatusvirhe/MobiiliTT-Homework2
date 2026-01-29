@@ -16,54 +16,61 @@ import androidx.navigation.navArgument
 import com.example.homework2.Chat
 
 
-// made/copied with the tutorial video
+// made with the tutorial videos
 // https://www.youtube.com/watch?v=4gUeyNkGE3g&list=PLQkwcJG4YTCSpJ2NLhDTHhi6XBNfk9WiC&index=18
-
+//https://www.youtube.com/watch?v=wJKwsI5WUI4
 
 @Composable
 fun Navigation(){
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = Screen.MainScreen.route){
+    NavHost(navController = navController, startDestination = Screen.MainScreen.route, builder = {
         composable(route = Screen.MainScreen.route){
-            MainScreen(navController=navController)
+            Mainscrn(SampleData.conversationSample, navController)
         }
-        composable (route = Screen.DetailScreen.route + "/{name}",
-            arguments= listOf(
-            navArgument("Name"){
-                type = NavType.StringType
-                defaultValue = "kethu"
-            }
-        )){ entry ->
-            DetailScreen(name = entry.arguments?.getString("name"))
+        composable (route = Screen.KethuScreen.route){
+            ChatScreen(SampleData.conversationSample.get(0), navController)
         }
-    }
+        composable (route = Screen.NapakettuScreen.route){
+            ChatScreen(SampleData.conversationSample.get(1), navController)
+        }
+    })
 }
 
 sealed class Screen(val route: String){
     object MainScreen : Screen("main_screen")
-    object DetailScreen : Screen("detail_screen")
+    object KethuScreen : Screen("kethu_screen")
+    object NapakettuScreen : Screen("napakettu_screen")
 
 }
 
-@Composable
-fun MainScreen(navController: NavController){
+//@Composable
+/*fun MainScreen(navController: NavController){
     // how it looks. Columns etc
     Surface() {
-        Mainscrn(chats = SampleData.conversationSample)
+        Mainscrn(chats = SampleData.conversationSample, navController)
     }
     Button(
         onClick = {
             navController.navigate(Screen.DetailScreen.route)
         }
     ){}
-}
+}*/
 
-@Composable
-fun DetailScreen(name: String?){
+//@Composable
+/*fun DetailScreen(name: String?){
+    Surface{
+        var thischat = SampleData.conversationSample.get(0) // the first by default
+        for (conv in SampleData.conversationSample){
+            if(conv.sender.equals(name)){
+                thischat = conv
+            }
+        }
+        Conversation(thischat)
+    }
     Box(
         modifier = Modifier.fillMaxSize()
     ){
         Text(text = "Hello, $name")
     }
     // example
-}
+}*/
